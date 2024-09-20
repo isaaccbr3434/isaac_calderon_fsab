@@ -1,17 +1,41 @@
-// We import components from other files like this
-import MyCard from "./components/MyCard";
+"use client";
 
-// In a `page.js` file, we usually call the page function `Home`
+import { useState } from "react";
+import Auth from "../app/components/Auth";
+import WorkoutForm from "../app/components/WorkoutForm";
+import WorkoutHistory from "../app/components/WorkoutHistory";
+import Goals from "../app/components/Goals";
+import ExerciseLibrary from "../app/components/ExerciseLibary";
+import ProgressTracker from "../app/components/ProgressTracker";
+
 export default function Home() {
+  const [workouts, setWorkouts] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+
+  const handleAddWorkout = (newWorkout) => {
+    setWorkouts([...workouts, newWorkout]);
+  };
+
+  const handleAddGoal = (newGoal) => {
+    setGoals([...goals, newGoal]);
+  };
+
   return (
     <div>
-      <p> Hello World!</p>
-      <MyCard
-        // Example of passing in props (properties) to the card
-        title="My React Card"
-        text="This is some text that is inside of the card"
-        buttonText="Click me!"
-      ></MyCard>
+      <h1>Workout Tracker</h1>
+      {!isAuthenticated ? (
+        <Auth onAuthChange={() => setIsAuthenticated(true)} />
+      ) : (
+        <>
+          <WorkoutForm onAddWorkout={handleAddWorkout} />
+          <WorkoutHistory workouts={workouts} />
+          <Goals goals={goals} onAddGoal={handleAddGoal} />
+          <ExerciseLibrary />
+          <ProgressTracker workoutData={workouts} />
+        </>
+      )}
     </div>
   );
 }
+
